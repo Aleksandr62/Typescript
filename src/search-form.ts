@@ -1,16 +1,22 @@
-import {renderBlock, getDefaultDate} from './lib.js'
+import { renderBlock, getDefaultDate, search } from "./lib.js";
 
-export function renderSearchFormBlock(arrival: Date = getDefaultDate(1), departure: Date = getDefaultDate(3)) {
-  const currentDate = getDefaultDate(0).toISOString().substr(0, 10)
-  const arrivalDate = arrival.toISOString().substr(0, 10)
-  const departureDate = departure.toISOString().substr(0, 10)
-  const maxDate = new Date(Date.UTC(arrival.getFullYear(), arrival.getMonth() + 2, 0))
-  const maxDepartureDate = maxDate.toISOString().substr(0, 10)
+export function renderSearchFormBlock(
+  arrival: Date = getDefaultDate(1),
+  departure: Date = getDefaultDate(3)
+) {
+  const currentDate = getDefaultDate(0).toISOString().substr(0, 10);
+  const arrivalDate = arrival.toISOString().substr(0, 10);
+  const departureDate = departure.toISOString().substr(0, 10);
+  const maxDate = new Date(
+    Date.UTC(arrival.getFullYear(), arrival.getMonth() + 2, 0)
+  );
+  const maxDepartureDate = maxDate.toISOString().substr(0, 10);
+
   renderBlock(
-    'search-form-block',
+    "search-form-block",
     `
-    <form>
-      <fieldset class="search-filedset">
+    <form >
+      <fieldset class="search-fieldset">
         <div class="row">
           <div>
             <label for="city">Город</label>
@@ -36,11 +42,11 @@ export function renderSearchFormBlock(arrival: Date = getDefaultDate(1), departu
             <input id="max-price" type="text" value="" name="price" class="max-price" />
           </div>
           <div>
-            <div><button>Найти</button></div>
+            <div><button id="btn">Найти</button></div>
           </div>
         </div>
       </fieldset>
     </form>
     `
-  )
+  );
 }
