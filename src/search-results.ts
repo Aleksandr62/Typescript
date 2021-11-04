@@ -1,4 +1,5 @@
-import { IPlace, renderBlock } from "./lib.js";
+import { renderBlock } from "./lib.js";
+import { IPlace } from "./types.js";
 import { getFavoriteItemById } from "./lib.js";
 
 export function renderSearchStubBlock() {
@@ -55,20 +56,19 @@ function renderSearchResultsItems(place: IPlace) {
 <div class="result-container">
   <div class="result-img-container">
     <div data-id="${place.id}" 
-      data-name="${place.name}"
-      data-image="${place.image}"
+      data-name="${place.name || place.title}"
+      data-image="${place.image || place.photos[0]}"
       class="favorites ${getFavoriteItemById(place.id) ? "active" : ""}"></div>
-    <img class="result-img" src="${place.image}" alt="">
+    <img class="result-img" src="${place.image || place.photos[0]}" alt="">
   </div>	
   <div class="result-info">
     <div class="result-info--header">
-      <p>${place.name}</p>
-      <p class="price">${place.price}&#8381;</p>
+      <p>${place.name || place.title}</p>
+      <p class="price">${place.price || place.totalPrice}&#8381;</p>
     </div>
-    <div class="result-info--map"><i class="map-icon"></i> ${
-      place.remoteness
-    }км от вас</div>
-    <div class="result-info--descr">${place.description}</div>
+    <div class="result-info--map"><i class="map-icon"></i> 
+    ${place.remoteness || "-"}км от вас</div>
+    <div class="result-info--descr">${place.description || place.details}</div>
     <div class="result-info--footer">
       <div>
         <button data-btn-id="${place.id}">Забронировать</button>

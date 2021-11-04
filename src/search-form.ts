@@ -1,4 +1,4 @@
-import { renderBlock, getDefaultDate, search } from "./lib.js";
+import { renderBlock, getDefaultDate } from "./lib.js";
 
 export function renderSearchFormBlock(
   arrival: Date = getDefaultDate(1),
@@ -20,13 +20,13 @@ export function renderSearchFormBlock(
         <div class="row">
           <div>
             <label for="city">Город</label>
-            <input id="city" type="text" disabled value="Санкт-Петербург" />
+            <input id="city" name="city" type="text" readonly value="Санкт-Петербург" />
             <input type="hidden" disabled value="59.9386,30.3141" />
           </div>
-          <!--<div class="providers">
+          <div class="providers">
             <label><input type="checkbox" name="provider" value="homy" checked /> Homy</label>
             <label><input type="checkbox" name="provider" value="flat-rent" checked /> FlatRent</label>
-          </div> --!>
+          </div> 
         </div>
         <div class="row">
           <div>

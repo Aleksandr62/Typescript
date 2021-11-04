@@ -1,3 +1,5 @@
+///<reference path="flat-rent-sdk.d.ts" />
+import { IParams, FlatRentSdk } from "./flat-rent-sdk.js";
 import { renderSearchFormBlock } from "./search-form.js";
 import {
   renderSearchStubBlock,
@@ -8,47 +10,34 @@ import { getPlaces, postBookingPlace } from "./api.js";
 import {
   getUserData,
   renderToast,
-  callback,
-  handlerSubmitSearchForm,
   toggleFavoriteItem,
   getFavoritesAmount,
   getDataFromSearchForm,
-  IPlace,
-  ISearchFormData,
+  search,
 } from "./lib.js";
+import { IUser, IPlace, ISearchFormData } from "./types.js";
 
 const API_URL = "http://localhost:4000/places";
 
 localStorage.setItem("username", "Vasiliy");
 localStorage.setItem("avatarUrl", "../img/avatar.png");
 
-const { username, avatarUrl } = getUserData() as {
-  username: string;
-  avatarUrl: string;
-};
+const { username, avatarUrl } = getUserData() as IUser;
+const favoriteItemsAmount = getFavoritesAmount();
+const flatRentSdk = new FlatRentSdk();
 
 window.addEventListener("DOMContentLoaded", () => {
   const resultBlock = document.getElementById("search-results-block");
+
   renderUserBlock({
     username,
     avatarUrl,
-    favoriteItemsAmount: getFavoritesAmount(),
+    favoriteItemsAmount,
   });
   renderSearchFormBlock();
   renderSearchStubBlock();
-  /*   renderToast(
-    {
-      text: "Это пример уведомления. Используйте его при необходимости",
-      type: "success",
-    },
-    {
-      name: "Понял",
-      handler: () => {
-        console.log("Уведомление закрыто");
-      },
-    }
-  ); */
   const searchForm = document.querySelector("form");
+
   searchForm.onsubmit = async (e: Event) => {
     e.preventDefault();
     resultBlock.removeEventListener("click", listenerResultSearch);
@@ -69,10 +58,21 @@ window.addEventListener("DOMContentLoaded", () => {
     );
 
     const searchData = getDataFromSearchForm(new FormData(searchForm));
-    const urlApi = searchData.price
-      ? `${API_URL}?price_lte=${searchData.price}`
-      : `${API_URL}`;
-    const places = await getPlaces(urlApi);
+
+    let paramsSearchFlatRent: IParams = {
+      city: searchData.city,
+      checkInDate: new Date(searchData.arrival),
+      checkOutDate: new Date(searchData.departure),
+    };
+    if (searchData.price)
+      paramsSearchFlatRent.priceLimit = parseInt(searchData.price);
+
+    let places = [];
+    if (searchData.provider.indexOf("homy") !== -1)
+      places = [...(await search(API_URL, searchData))];
+    if (searchData.provider.indexOf("flat-rent") !== -1)
+      places = [...places, ...(await flatRentSdk.search(paramsSearchFlatRent))];
+
     renderSearchResultsBlock(places);
     resultBlock.addEventListener("click", listenerResultSearch);
     resultBlock.addEventListener("click", (e) =>
@@ -95,7 +95,7 @@ function listenerResultSearch(e: MouseEvent) {
     renderUserBlock({
       username,
       avatarUrl,
-      favoriteItemsAmount: getFavoritesAmount(),
+      favoriteItemsAmount,
     });
   }
 }

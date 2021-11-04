@@ -1,3 +1,6 @@
+import { ISearchFormData, IPlace, IFavorite } from "./types.js";
+import { getPlaces } from "./api.js";
+
 export function renderBlock(elementId: string, html: string) {
   const element = document.getElementById(elementId);
   element.innerHTML = html;
@@ -46,32 +49,26 @@ export function getFavoritesAmount(): string {
   return `${allFavoriteItems.length || ""}`;
 }
 
-export interface ISearchFormData {
-  arrival: string;
-  departure: string;
-  price: number;
-}
-
-export interface IPlace {
-  id: string;
-  name: string;
-  description: string;
-  image: string;
-  remoteness: number;
-  bookedDates: string[];
-  price: number;
-}
-
-export function search(props: ISearchFormData) {
+export async function search(
+  url: string,
+  props: ISearchFormData
+): Promise<IPlace[]> {
   const { arrival, departure, price } = props;
-  console.log(arrival, departure, price);
+  const bookingDays = getBookingDays(new Date(arrival), new Date(departure));
+  const ifPrice = price ? `?price_lte=${price}` : "";
+  const places = await getPlaces(url + ifPrice);
+  (<IPlace[]>places).forEach((element) => {
+    element.totalPrice = element.price * bookingDays;
+    delete element.price;
+  });
+  return places;
 }
 
 export function callback(props: IPlace[] | Error) {
   console.log(props);
 }
 
-export function handlerSubmitSearchForm(cb: (props: IPlace[] | Error) => void) {
+/* export function handlerSubmitSearchForm(cb: (props: IPlace[] | Error) => void) {
   search({
     arrival: (<HTMLInputElement>document.getElementById("check-in-date")).value,
     departure: (<HTMLInputElement>document.getElementById("check-out-date"))
@@ -83,7 +80,7 @@ export function handlerSubmitSearchForm(cb: (props: IPlace[] | Error) => void) {
   const paramSearch =
     Math.random() > 0.5 ? new Error("Ошибка") : ([] as IPlace[]);
   setTimeout(() => cb(paramSearch), 1000);
-}
+} */
 
 export function getAllFavoriteItems() {
   return JSON.parse(localStorage.getItem("favoriteItems")) || [];
@@ -93,12 +90,6 @@ export function getFavoriteItemById(id: string): boolean {
   return Boolean(
     getAllFavoriteItems()?.find((item: IFavorite) => item.id === id)
   );
-}
-
-export interface IFavorite {
-  id: string;
-  name: string;
-  image: string;
 }
 
 export function toggleFavoriteItem(favorite: IFavorite) {
@@ -118,8 +109,19 @@ export function toggleFavoriteItem(favorite: IFavorite) {
 }
 
 export function getDataFromSearchForm(formData: FormData): ISearchFormData {
-  return [...formData.entries()].reduce((acc, key) => {
-    acc = { ...acc, [key[0]]: key[1] };
-    return acc;
-  }, {}) as ISearchFormData;
+  const bookingDays = getBookingDays(
+    new Date(formData.get("arrival") as string),
+    new Date(formData.get("departure") as string)
+  );
+  return {
+    city: formData.get("city") as string,
+    arrival: formData.get("arrival") as string,
+    departure: formData.get("departure") as string,
+    price: formData.get("price") as string,
+    provider: formData.getAll("provider") as string[],
+  };
+}
+
+function getBookingDays(arrival: Date, departure: Date) {
+  return (departure.getTime() - arrival.getTime()) / 1000 / 60 / 60 / 24;
 }
