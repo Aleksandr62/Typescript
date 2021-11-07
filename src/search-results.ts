@@ -14,7 +14,7 @@ export function renderSearchStubBlock() {
   );
 }
 
-export function renderEmptyOrErrorSearchBlock(reasonMessage) {
+export function renderEmptyOrErrorSearchBlock(reasonMessage: string) {
   renderBlock(
     "search-results-block",
     `
@@ -43,7 +43,7 @@ export function renderSearchResultsBlock(places: IPlace[]) {
     </div>
     <ul class="results-list">
     ${Object.keys(places)
-      .map((key) => renderSearchResultsItems(places[key]))
+      .map((key: any) => renderSearchResultsItems(places[key]))
       .join("")}
     </ul>
     `
@@ -56,22 +56,25 @@ function renderSearchResultsItems(place: IPlace) {
 <div class="result-container">
   <div class="result-img-container">
     <div data-id="${place.id}" 
-      data-name="${place.name || place.title}"
-      data-image="${place.image || place.photos[0]}"
+      data-name="${place.name}"
+      data-image="${place.image}"
       class="favorites ${getFavoriteItemById(place.id) ? "active" : ""}"></div>
-    <img class="result-img" src="${place.image || place.photos[0]}" alt="">
+    <img class="result-img" src="${place.image}" alt="">
   </div>	
   <div class="result-info">
     <div class="result-info--header">
-      <p>${place.name || place.title}</p>
-      <p class="price">${place.price || place.totalPrice}&#8381;</p>
+      <p>${place.name}</p>
+      <p class="price">${place.totalPrice}&#8381;</p>
     </div>
     <div class="result-info--map"><i class="map-icon"></i> 
     ${place.remoteness || "-"}км от вас</div>
-    <div class="result-info--descr">${place.description || place.details}</div>
+    <div class="result-info--descr">${place.description}</div>
     <div class="result-info--footer">
       <div>
-        <button data-btn-id="${place.id}">Забронировать</button>
+        <button data-btn-id="${place.id}" 
+          data-provider="${place.provider}">
+          Забронировать
+        </button>
       </div>
     </div>
   </div>

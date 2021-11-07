@@ -1,11 +1,25 @@
 {
   "compilerOptions": {
+    "baseUrl": "src",
     "outDir": "public/scripts",
-    "target": "es2015",
-    "module": "es2015",
-    "moduleResolution": "node"
+    "target": "ES2015",
+    "module": "ES2015",
+    "moduleResolution": "node",
+    "allowJs": true,
+    "declaration": true,
+    "declarationDir": "public/scripts/types",
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "strictBindCallApply": true,
+    "noImplicitThis": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
   },
-  "files": [
-    "src/index.ts"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }

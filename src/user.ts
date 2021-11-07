@@ -1,10 +1,5 @@
 import { renderBlock } from "./lib.js";
-
-interface IUser {
-  username: string;
-  avatarUrl: string;
-  favoriteItemsAmount?: string;
-}
+import { IUser } from "./types";
 
 export function renderUserBlock({
   username,
