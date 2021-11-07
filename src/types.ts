@@ -1,29 +1,27 @@
 export interface IUser {
   username: string;
   avatarUrl: string;
+  favoriteItemsAmount?: string;
 }
 
 export interface ISearchFormData {
   city: string;
-  arrival: string;
-  departure: string;
-  price: string;
+  checkInDate: Date;
+  checkOutDate: Date;
+  maxPrice: string;
   provider: string[];
 }
 
 export interface IPlace {
   id: string;
+  provider: string;
   name: string;
   description: string;
   image: string;
   remoteness: number;
-  bookedDates: string[];
-  price: number;
-  title?: string;
-  details?: string;
-  photos?: string[];
-  coordinates?: number[];
-  totalPrice?: number;
+  bookedDates: number[];
+  coordinates: number[];
+  totalPrice: number;
 }
 
 export interface IFavorite {

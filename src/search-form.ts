@@ -39,7 +39,7 @@ export function renderSearchFormBlock(
           </div>
           <div>
             <label for="max-price">Макс. цена суток</label>
-            <input id="max-price" type="text" value="" name="price" class="max-price" />
+            <input id="max-price" type="text" value="" name="maxPrice" class="max-price" />
           </div>
           <div>
             <div><button id="btn" type="submit">Найти</button></div>
